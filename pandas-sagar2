@@ -1,0 +1,67 @@
+df.insert(0, "     ", [    ])                       df.drop(columns=["    ","    "],inplace=true)
+df.loc[2, "salary"]= 5500
+
+
+
+
+
+
+
+1  ####insert new column in code                                                                                     
+df.insert(column-number-from0,"new-column-title",[new-column-data])
+df.insert(2,"extra-paisa",[1000,2000,3000,4000])
+
+2  #### replace any value
+df.loc[row-number-from0, "column-name-title"]= 5500                                 ####loc=location  [row-number,"column-name-title"]
+df.loc[2, "salary"]= 5500      
+
+3 increase any column by 5%=  *1.05 or reduce by 10%=  *.9 (add multiply as per need)
+df("salary") = df("salary") *1.05
+
+4  Remove any column
+df.drop(columns=["column-nav"])
+df.drop(columns=["loser"])                       
+
+
+
+
+1  ####insert new column in code
+
+
+
+df["bonus"]= df["salary]*0.1  ###directly add column as last column
+
+####insert new column in code
+#df.insert(colun-number , "column-title", [data1,2,3,4,5])
+print( df.insert(2,"extra-paisa",[1000,2000,3000,4000]) )
+print(df)
+
+None
+  name  salary  extra-paisa  bonus  age  winner  loser
+0   dd    1000         1000   1000   20    True  False
+1   dd    2000         2000   2000   30   False   True
+2   pp    3000         3000   3000   40    True  False
+3   sd    4000         4000   4000   50   False   True
+
+
+
+2#### replace any value
+
+df.loc[2, "salary"]= 5500         ##loc=location  [row-number,"column-name-title"]= value u want replace there so above pp salary replace by 5500
+
+name  salary  extra-paisa  bonus  age  winner  loser
+0   dd    1000         1000   1000   20    True  False
+1   dd    2000         2000   2000   30   False   True
+2   pp    5500         3000   3000   40    True  False
+3   sd    4000         4000   4000   50   False   True
+
+
+
+
+
+3 increase any column by 5%=  *1.05 or reduce by 10%=  *.9 (add multiply as per need)
+df("salary") = df("salary") *1.05
+
+
+
+16.00
