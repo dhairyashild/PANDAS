@@ -1,6 +1,6 @@
 df.insert(0, "     ", [    ])                       df.drop(columns=["    ","    "],inplace=true)
 df.loc[2, "salary"]= 5500
-
+df.drop(columns=["column-nav"])
 
 
 
