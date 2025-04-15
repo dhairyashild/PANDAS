@@ -1,5 +1,17 @@
+#################################################################
+sagar-video-1-notes
+
+df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)
+
+df.info()
+df.head()            
+df.tail()
+df[["salary","age"]]
+df.describe()
+##################################################################
+
 df.insert(0, "     ", [    ])                       df.drop(columns=["    ","    "],inplace=true)
-df.loc[2, "salary"]= 5500
+df.loc[2, "salary"]= 5500                           ##only this have square bracket 1st other all strart with  round bracket
 df.drop(columns=["column-nav"])
 
 
