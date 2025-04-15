@@ -14,6 +14,23 @@ df.insert(0, "     ", [    ])                       df.drop(columns=["    ","   
 df.loc[2, "salary"]= 5500                           ##only this have square bracket 1st other all strart with  round bracket
 df.drop(columns=["column-nav"])
 
+1) check where are null values ?
+print(df.isnull())         ---------show all missing values in full dataframe    --here false= no worry
+print(df.isnull().sum())    ----- get only number on null values in each column
+
+2) remove null values
+NULL ROW REMOVE------- df.dropna(axis=0, inplace=True)
+NULL COLOMN REMOVE --- df.dropna(axis=1, inplace=False)
+
+3) fill null values by same value everywhere
+df.fillna(value-to-fill , inplace=True)
+
+
+
+
+
+
+
 
 
 
@@ -75,5 +92,27 @@ name  salary  extra-paisa  bonus  age  winner  loser
 df("salary") = df("salary") *1.05
 
 
+##### 16min nanatr
 
-16.00
+5   MISSING VALUES
+
+
+NaN = Not a number
+None = for object data types) 
+
+isnull()  
+True =Nan means data  missing 
+False =value is present -- no need to do anything
+
+1) check where are null values ?
+print(df.isnull())         ---------show all missing values in full dataframe    --here false= no worry
+print(df.isnull().sum())    ----- get only number on null values in each column
+
+2) remove null values
+NULL ROW REMOVE------- df.dropna(axis=0, inplace=True)
+NULL COLOMN REMOVE --- df.dropna(axis=1, inplace=False)
+
+3) fill null values by same value everywhere
+df.fillna(value-to-fill , inplace=True)
+
+24min
