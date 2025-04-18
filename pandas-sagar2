@@ -1,21 +1,28 @@
 #################################################################
 sagar-video-1-notes
 
-df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)
+df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)    -for local data to add
 
 df.info()
 df.head()            
 df.tail()
-df[["salary","age"]]
+df[["salary","age"]]        /   df["salary"]
 df.describe()
+
+2nd vid
+df.insert( v1,"v2",[v3])         v/s   df,drop(columns=["v2"]) 
+df.isnull()
+df.isnull().sum()
+df.dropna(axis=0, inplace=True)            ax=1 for column
+df.fillna(value-to-fill , inplace=True)
 ##################################################################
 
-df.insert(0, "     ", [    ])                       df.drop(columns=["    ","    "],inplace=true)
+df.insert(column-number-from0,"new-column-title",[new-column-data])            df.drop(columns=["    ","    "],inplace=true)
 df.loc[2, "salary"]= 5500                           ##only this have square bracket 1st other all strart with  round bracket
 df.drop(columns=["column-nav"])
 
 1) check where are null values ?
-print(df.isnull())         ---------show all missing values in full dataframe    --here false= no worry
+print(df.isnull())          -----show all missing values in full dataframe    --here false= no worry
 print(df.isnull().sum())    ----- get only number on null values in each column
 
 2) remove null values
@@ -40,6 +47,10 @@ df.fillna(value-to-fill , inplace=True)
 df.insert(column-number-from0,"new-column-title",[new-column-data])
 df.insert(2,"extra-paisa",[1000,2000,3000,4000])
 
+4  Remove any column
+df.drop(columns=["column-nav"])
+df.drop(columns=["loser"])   
+
 2  #### replace any value
 df.loc[row-number-from0, "column-name-title"]= 5500                                 ####loc=location  [row-number,"column-name-title"]
 df.loc[2, "salary"]= 5500      
@@ -47,9 +58,7 @@ df.loc[2, "salary"]= 5500
 3 increase any column by 5%=  *1.05 or reduce by 10%=  *.9 (add multiply as per need)
 df("salary") = df("salary") *1.05
 
-4  Remove any column
-df.drop(columns=["column-nav"])
-df.drop(columns=["loser"])                       
+                    
 
 
 
@@ -115,4 +124,13 @@ NULL COLOMN REMOVE --- df.dropna(axis=1, inplace=False)
 3) fill null values by same value everywhere
 df.fillna(value-to-fill , inplace=True)
 
-24min
+4) fill null values by mean value everywhere
+df["age"].fillna(df["age"].mean(),inplace=True)
+df["age"].fillna()               ----select age column for fillna
+df["age"].mean()                 ----mean 
+
+
+
+5) interpolate
+df ['Value'] =df['Value').interpolate(method="linear")
+print(df)
