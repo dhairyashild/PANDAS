@@ -134,3 +134,7 @@ df["age"].mean()                 ----mean
 5) interpolate
 df ['Value'] =df['Value').interpolate(method="linear")
 print(df)
+
+
+
+32
