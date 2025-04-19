@@ -1,0 +1,115 @@
+##########################################saransh-notes
+
+a= np.array(anyname)
+np.zeros((2,2))  
+np.ones(2,3) 
+np.full((2,3),7)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+numpy benefit over python list--
+-fast
+-easy 
+-less memory
+
+
+
+1D array =1 row
+2D       = row + columns            ---Rows & columns kitihi asu shakatat
+multi-D  = more than 2D arrays
+
+
+1) convert list into array
+imrt numpy as np
+list= [1,2,3,4]
+a= np.array(list)
+print(a)
+---[1 2 3 4]
+
+2) create array with zeroes
+np.zeros((2,2))               ----
+array([[0., 0.],
+       [0., 0.]])
+
+
+3)  create array with 1
+np.ones(2,3)           ---
+array([[1., 1., 1.],
+       [1., 1., 1.]])
+
+
+4) create array with specific value everywhere
+np.full((2,3),7)            -----
+array([[7, 7, 7],
+       [7, 7, 7]])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
