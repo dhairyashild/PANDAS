@@ -131,10 +131,62 @@ df["age"].mean()                 ----mean
 
 
 
-5) interpolate
-df ['Value'] =df['Value').interpolate(method="linear")
-print(df)
 
 
+5) Interpolate====   गहाळ मूल्ये (missing values) अंदाजित करून भरणे.
 
-32
+प्रकार : these 3 imp learn these 3 must...
+linear: सरळ रेषेत मूल्य भरणे.
+polynomial: बहुपदीय समीकरणाने भरणे.
+time: वेळेनुसार डेटा असल्यास वापर.
+
+कोड उदाहरण: linear
+import pandas as pd
+s = pd.Series([1, None, 3])
+s_filled = s.interpolate()
+print(s_filled)
+# Output:
+# 0    1.0
+# 1    2.0
+# 2    3.0
+# dtype: float64
+
+USE--
+numerical data predict value
+
+disadv--
+names/ ids  cant use to predict
+--------------------------------------
+sort_values() -
+
+व्याख्या: डेटाफ्रेम किंवा सिरीजमधील मूल्यांना क्रमवार लावणे.
+
+पॅरामीटर्स:
+by: (DataFrame) सॉर्ट करण्यासाठी स्तंभांची नावे.
+ascending: चढत्या (True) किंवा उतरत्या (False) क्रमाने.
+inplace: मूळ डेटा बदलायचा की नाही.
+उदाहरण :
+
+import pandas as pd
+data = {'A': [3, 1, 2], 'B': [6, 4, 5]}
+df = pd.DataFrame(data)
+df_sorted = df.sort_values(by='A',ascending=True, inplace=true)
+print(df_sorted)
+# Output:
+#    A  B
+# 1  1  4
+# 2  2  5
+# 0  3  6
+
+------------------------------
+summery statistics===
+
+df.Column Name.sum()
+df.Column Name.min()
+df.column Name.max()
+
+--------------------------------------
+
+42
+
+
