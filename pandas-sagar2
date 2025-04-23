@@ -32,7 +32,8 @@ NULL COLOMN REMOVE --- df.dropna(axis=1, inplace=False)
 3) fill null values by same value everywhere
 df.fillna(value-to-fill , inplace=True)
 
-
+4) sort_values(b='  ' ,  a=    , i=    )            ---सॉर्ट करण्यासाठी स्तंभांची नावे.ascending: चढत्या (True) किंवा उतरत्या (False) क्रमाने.
+df_sorted = df.sort_values(by='A',ascending=True, inplace=true)
 
 
 
@@ -186,7 +187,18 @@ df.Column Name.min()
 df.column Name.max()
 
 --------------------------------------
+# groupby() - गटांमध्ये डेटा एकत्रित करण्यासाठी
 
-42
+# उपयोग: विशिष्ट स्तंभातील समान मूल्यांनुसार पंक्तींचे गट तयार करण्यासाठी आणि त्यावर गणना करण्यासाठी.
+# सिंटॅक्स: df.groupby('column_name')
+# उदाहरण: df.groupby('शहराचे नाव')['विक्री'].sum()
 
+import pandas as pd
+data = {'city': ['Mumbai', 'Pune', 'Mumbai', 'Pune'], 'sales': [100, 150, 120, 200]}
+df = pd.DataFrame(data)
+print(df.groupby('city')['sales'].sum())
+=
+.groupby('city'): डेटाफ्रेममधील पंक्तींना 'city' स्तंभातील समान मूल्यांनुसार गट करते.
+['sales']: गटातून फक्त 'sales' नावाचा स्तंभ निवडते.
+.sum(): निवडलेल्या 'sales' स्तंभातील प्रत्येक गटातील मूल्यांची बेरीज करते.
 
