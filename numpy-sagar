@@ -21,11 +21,34 @@ print(a.dtype)  =    float64                   # आरेतील घटका
 
 i_var= (var.astype(int))          ----- var.astype(datatype u want)-- convert dtype like typecast in python
 
+# indexing == select 1 element only  , slicing === select multiple element more than 1
+
+-[0:28]   = [:]    =[:28]         All 3 are same
+- [[start letter used:   stop letter excluded   :    step]]
+var1="i am marathi & proud maratha"       
+print(var1)
+print(var1[0])       =i
+print(len(var1))     =28                            # error=   length   [ ]              --len has round bracket
+print(var1[0:28])                                   # indexing word must have [[start:stop:step]] square bracket # indexing -1 / -2 works only with whole data means [::-2]
+print(var1[::-1])    =ahtaram duorp & ihtaram ma i
+print(var1[:])
+print(var1[:28])
+print(var1[2:4:1])   =am
+print(var1[0:4:-1])        ====================
+
+i am marathi & proud maratha
+i
+28
+i am marathi & proud maratha
+ahtaram duorp & ihtaram ma i
+i am marathi & proud maratha
+i am marathi & proud maratha
+am
 
 
 
-
-
+fancy_indexing(select non sequential values) --- print(var[[1,3,4]])      # error --- i gave only 1 [square bracket]  there are 2 []
+boolean_masking(selecy with condition) --- print(var[var>10])                                 var[condition]
 ------------------------------------------------------------------------------------------------------------------------------------------
 ARRAY====list without comma
 1d aaray= 1 row , multiple column  , 1 []
@@ -81,11 +104,51 @@ print(var.dtype)
 i_var= (var.astype(int))                               var.astype(datatype u want)
 print(i_var)
 print(i_var.dtype)
+---------------------------------
+57.14   index and slicing   --- i copy notes from marathi video below both teach same topic btu marathi is best
+-vid10 : String Slicing And Other Functions In Python | Python Tutorial For Beginners in Marathi #python #10
 
 
+-[0:28]   = [:]    =[:28]         All 3 are same
+- [[start letter used:   stop letter excluded   :    step]]
+var1="i am marathi & proud maratha"       
+print(var1)
+print(var1[0])       =i
+print(len(var1))     =28                            # error=   length   [ ]              --len has round bracket
+print(var1[0:28])                                   # indexing word must have [[start:stop:step]] square bracket # indexing -1 / -2 works only with whole data means [::-2]
+print(var1[::-1])    =ahtaram duorp & ihtaram ma i
+print(var1[:])
+print(var1[:28])
+print(var1[2:4:1])   =am
+print(var1[0:4:-1])        ====================
+
+i am marathi & proud maratha
+i
+28
+i am marathi & proud maratha
+ahtaram duorp & ihtaram ma i
+i am marathi & proud maratha
+i am marathi & proud maratha
+am
+
+## fancy indexing  ==== selecting number which are not in sequence
+
+import numpy as np
+var= np.array([1,2,3,4,10.7]) 
+
+fancy_indexing= print(var[[1,3,4]])                  # error --- i gave only 1 [square bracket]  there are 2 []
+print(fancy_indexing )                =======================
+[ 2.   4.  10.7]
+
+## boolean masking  == filter values based on condition 
+
+var= np.array([1,2,3,4,10.7])
+boolean_masking = print(var[var>10])                                 var[condition]
+print(boolean_masking)
+------------------------------------
 
 
-
+1.9.30 reshape
 
 
 
