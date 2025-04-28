@@ -1,23 +1,37 @@
 ##########################################saransh-notes
 
-a= np.array(anyname)
-np.zeros((2,2))  
-np.ones(2,3) 
+
+### numpy ARRAY CREATION METHODS
+a= np.array(var)                        /       a= np.array([1,2,3,4])   
+np.zeros((2,2))              (row  , column )
+np.ones((2,3))                ---error 2 round bracket i gave 1
 np.full((2,3),7)
+np.arrange(start-include , stop-exclude , step)     ====same like range in python     ---only 1d create
+identity_matrix= np.eye(value)                      ====diagonal with 1
+
+#### PROPERTIES of arrays
+
+import numpy as np
+a = np.ones((2,4)) 
+
+print(a.shape)=   (2, 4)                     # आरेचा आकार: (पंक्ती, स्तंभ) 
+print(a.size) =     8                         # आरेतील घटकांची एकूण संख्या.
+print(a.ndim) =      2                        # आरेचे परिमाण (संख्या).
+print(a.dtype)  =    float64                   # आरेतील घटकांचा डेटा प्रकार.
+
+i_var= (var.astype(int))          ----- var.astype(datatype u want)-- convert dtype like typecast in python
 
 
 
 
 
 
-
-
-
-
-
-
-
-
+------------------------------------------------------------------------------------------------------------------------------------------
+ARRAY====list without comma
+1d aaray= 1 row , multiple column  , 1 []
+2d      = multiple rows , multi columns , 2 [[   ]]
+4d      =                                 4 [[[[    ]]]]
+multi-D  = more than 2D arrays
 
 numpy benefit over python list--
 -fast
@@ -26,17 +40,19 @@ numpy benefit over python list--
 
 
 
-1D array =1 row
-2D       = row + columns            ---Rows & columns kitihi asu shakatat
-multi-D  = more than 2D arrays
-
 
 1) convert list into array
-imrt numpy as np
+import numpy as np
 list= [1,2,3,4]
 a= np.array(list)
 print(a)
 ---[1 2 3 4]
+
+OR
+import numpy as np
+vars= np.arrays[1,3,4,5,6] ======
+[1 2 3 4 5 6]
+
 
 2) create array with zeroes
 np.zeros((2,2))               ----
@@ -56,7 +72,15 @@ array([[7, 7, 7],
        [7, 7, 7]])
 
 
+5) convert datatyp
+e
+import numpy as np
+var= np.array([1,2,3,4,10.7]) 
 
+print(var.dtype)
+i_var= (var.astype(int))                               var.astype(datatype u want)
+print(i_var)
+print(i_var.dtype)
 
 
 
