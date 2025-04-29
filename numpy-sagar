@@ -21,11 +21,11 @@ print(a.dtype)  =    float64                   # आरेतील घटका
 
 i_var= (var.astype(int))          ----- var.astype(datatype u want)-- convert dtype like typecast in python
 
-# indexing == select 1 element only  , slicing === select multiple element more than 1
+# INDEXING== select 1 element only  , SLICING === select multiple element more than 1
 
 -[0:28]   = [:]    =[:28]         All 3 are same
 - [[start letter used:   stop letter excluded   :    step]]
-var1="i am marathi & proud maratha"       
+var1= ["i am marathi & proud maratha"]      
 print(var1)
 print(var1[0])       =i
 print(len(var1))     =28                            # error=   length   [ ]              --len has round bracket
