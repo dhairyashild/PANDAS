@@ -1,5 +1,6 @@
 ##########################################saransh-notes
-
+-numpy made inplace nahi bahuda so create new array to do any work
+-[[  2 sqare block if list in list
 
 ### numpy ARRAY CREATION METHODS
 a= np.array(var)                        /       a= np.array([1,2,3,4])   
@@ -62,6 +63,8 @@ var2 = np.insert(va,2,30,axis=0)            # error "np" at start i gave va   --
 var2 = np.insert(va,2,[30,40],axis=0)     # 2D -same above
 var2 = np.insert(va,2,[30,40],axis=None)  ==[ 1  2 30 40  3  4  5  6]    #flatten 1 row o/p
 
+# append add at end , insert add at specific position
+
 ## APPEND
 var2= np.append(var1,[10,20],axis=0)      ---var2= np.append(var1,[10,20])--BOTH SAME
 
@@ -74,10 +77,9 @@ print(var3)                               ================
 [ 1  2 10 20]
 
 
-## REMOVING ELEMENT OF ARRAY
+## DELETE ELEMENT OF ARRAY
 
-
-
+# full row delete
 
 
 
@@ -232,19 +234,54 @@ var2= np.append(var1,[10,20],axis=0)   =============           ---var2= np.appen
 
 ## REMOVING ELEMENT OF ARRAY
 
+# specific value delete 1D
+var1= np.array([1,2.3])  #,[4,5,6])
+var2= np.delete(var1,0)
+print(var2)            ==========
+[2.3]
+
+# specific value delete 2D
+var1= np.array([[1,2,3], 
+                [40,50,60]])
+var2= np.delete(var1,4)                     #  it removes 50 because of this 4= fifth value which is 50
+print(var2)       ===========
+[1 2 3 40 60]
+
+
+#remove full row
+var1= np.array([[1,2,3], 
+                [4,5,6]])
+var2= np.delete(var1,0,axis=0)
+print(var2)             ============
+[[4 5 6]]
+
+#remove full row
+
+print("")
+var2= np.delete(var1,0,axis=1)
+print(var2)                       =========
+
+[[2 3]
+ [5 6]]
 
 
 
+###
+
+var1= np.array([1,2,3])
+var2= np.array([4,5,6])
+
+var3= np.vstack((var1,var2))
+print(var3)                        ==============
+[[1 2 3]
+ [4 5 6]]
+
+var4= np.hstack((var1,var2))
+print(var4)              ==========[1 2 3 4 5 6]
 
 
 
-
-
-
-
-
-
-
+1.33.00
 
 
 
