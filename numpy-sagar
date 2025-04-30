@@ -80,6 +80,65 @@ print(var3)                               ================
 ## DELETE ELEMENT OF ARRAY
 
 # full row delete
+var2= np.delete(var1,0,axis=0)         # middle value 0 is row number
+
+#remove full COLUMN 
+var2= np.delete(var1,0,axis=1)     # middle value 0 is column number
+
+# vertical merge rows --np.vstack((var1,var2))
+var3= np.vstack((var1,var2))
+print(var3)                        ==============
+[[1 2 3]
+ [4 5 6]]
+
+# horizontal merge rows -----np.hstack((var1,var2))
+var4= np.hstack((var1,var2)) ======
+[1 2 3 4 5 6]
+
+# SPLIT------ np.split(arrayNAME,no. of parts u want to divide)
+array= np.array([1,2,3,96,87,66])
+ar2= print(np.split(array,3))
+
+ब्रॉडकास्टिंग (Broadcasting):
+व्याख्या: लहान Array ला मोठ्या Array सोबत गणिती क्रिया करण्यासाठी ताणणे.
+import numpy as np
+a = np.array([1, 2])
+b = 5
+result = a + b # b ब्रॉडकास्ट होऊन [5, 5] प्रमाणे काम करतो.
+print(result) # आउटपुट: [6 7]
+
+वेक्टरिझेशन (Vectorization):
+व्याख्या: लूप न वापरता Array च्या सर्व घटकांवर एकाच वेळी क्रिया करणे.
+import numpy as np
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+result = a * b # प्रत्येक घटकाचा संगत घटकाशी गुणाकार.
+print(result) # आउटपुट: [ 4 10 18]
+
+### MISSING VALUES
+#ISNAN
+import numpy as np
+array= np.array([1,2,3,96,87,66,np.nan])
+v=print(np.isnan(array))               ==========
+[False False False False False False  True]                # True mean nan (not a number) present
+
+var2=np.nan_to_num(var1,nan=1000)  # default = 0 if not gave nan=
+print(var2)     ==========
+none
+
+
+
+
+
+
+
+
+
+2.2.0
+
+
+
+
 
 
 
@@ -255,9 +314,7 @@ var2= np.delete(var1,0,axis=0)
 print(var2)             ============
 [[4 5 6]]
 
-#remove full row
-
-print("")
+#remove full COLUMN
 var2= np.delete(var1,0,axis=1)
 print(var2)                       =========
 
@@ -266,8 +323,8 @@ print(var2)                       =========
 
 
 
-###
-
+#####################################################
+# vertical merge rows
 var1= np.array([1,2,3])
 var2= np.array([4,5,6])
 
@@ -276,6 +333,7 @@ print(var3)                        ==============
 [[1 2 3]
  [4 5 6]]
 
+# horizontal merge rows
 var4= np.hstack((var1,var2))
 print(var4)              ==========[1 2 3 4 5 6]
 
