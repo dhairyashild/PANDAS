@@ -1,20 +1,24 @@
 #################################################################
 sagar-video-1-notes
+df = pd.read_csv("data.csv")  / df=pd.DataFrame(data)    # डेटा CSV वरून वाचणे किंवा लोकल डेटा डेटाफ्रेममध्ये रूपांतरित करणे
 
+df.info()                   # डेटाफ्रेमची मूलभूत माहिती (कॉलम, डेटा प्रकार, मेमरी वापर)
+df.head()                   # डेटाफ्रेमच्या पहिल्या ५ पंक्ती दाखवणे        
+df.tail()                   # डेटाफ्रेमच्या शेवटच्या ५ पंक्ती दाखवणे
+df[["salary","age"]]        # विशिष्ट कॉलम निवडणे (मल्टीपल कॉलम्स) 
+df["salary"]                # एकच कॉलम निवडणे # मराठी
+df.describe()               # संख्यात्मक डेटाची सांख्यिकीय माहिती दाखवणे
+
+# 2nd vid
+df.insert(v1, "v2", [v3])   # नवीन कॉलम समाविष्ट करणे 
+df.drop(columns=["v2"])     # कॉलम डिलीट करणे # मराठी
+df.isnull()                 # गहाळ मूल्ये शोधणे (True/False मॅट्रिक्स) 
+df.isnull().sum()           # प्रत्येक कॉलममधील गहाळ मूल्यांची संख्या 
+df.dropna(axis=0, inplace=True)  # गहाळ मूल्ये असलेल्या पंक्ती काढून टाकणे #  ax=1 for column
+df.fillna(value-to-fill, inplace=True)  # गहाळ मूल्ये भरणे 
 df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)    -for local data to add
 
-df.info()
-df.head()            
-df.tail()
-df[["salary","age"]]        /   df["salary"]
-df.describe()
 
-2nd vid
-df.insert( v1,"v2",[v3])         v/s   df,drop(columns=["v2"]) 
-df.isnull()
-df.isnull().sum()
-df.dropna(axis=0, inplace=True)            ax=1 for column
-df.fillna(value-to-fill , inplace=True)
 ##################################################################
 
 df.insert(column-number-from0,"new-column-title",[new-column-data])            df.drop(columns=["    ","    "],inplace=true)
