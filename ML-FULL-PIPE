@@ -1,0 +1,332 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.metrics import classification_report, roc_auc_score, average_precision_score, confusion_matrix, roc_curve, precision_recall_curve
+import joblib
+import os
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torch import nn
+import torch.optim as optim
+from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
+import matplotlib.pyplot as plt
+from sklearn.calibration import calibration_curve
+from sklearn.metrics import f1_score
+
+# 1. [DATA LOAD]
+df = pd.read_csv('data.csv', parse_dates=['timestamp'], dtype={'category': 'category'}, low_memory=False)
+
+# 2. [DATA CLEAN]
+df_clean = (df
+    .pipe(lambda x: x.dropna(subset=['critical_col']))
+    .assign(
+        missing_num=lambda x: x['numeric_col'].fillna(x.groupby('group_col')['numeric_col'].transform('median')),
+        missing_cat=lambda x: x['cat_col'].fillna('MISSING'),
+        outlier_flag=lambda x: np.where(x['value'] > x['value'].quantile(0.99), 1, 0)
+    ))
+
+# 3. [FEATURE ENGINEER]
+feature_pipeline = (
+    pd.get_dummies(df_clean, columns=['cat_col'], drop_first=True)
+    .join([
+        df_clean['timestamp'].dt.dayofweek.rename('day_of_week'),
+        np.log1p(df_clean['value']).rename('log_value'),
+        (df_clean['value'] - df_clean.groupby('group_col')['value'].transform('mean')).rename('group_norm_value')
+    ])
+    .drop(columns=['low_importance_col'])
+)
+
+# 4. [TRAIN-TEST SPLIT]
+X_train, X_test, y_train, y_test = train_test_split(
+    feature_pipeline, df_clean['target'], test_size=0.2,
+    stratify=df_clean['stratify_col'] if 'stratify_col' in df_clean else None,
+    shuffle=not df_clean['timestamp'].is_monotonic_increasing
+)
+
+# 5. [MODEL TRAIN]
+def train_time_series_model(X_train, y_train, X_val, y_val, seq_length=30, input_size=None, hidden_size=64, num_layers=2, epochs=100, patience=5):
+    """
+    वेळ-मालिका डेटासाठी LSTM मॉडेल प्रशिक्षित करते.
+
+    Args:
+        X_train (pd.DataFrame): प्रशिक्षण वैशिष्ट्ये.
+        y_train (pd.Series): प्रशिक्षण लक्ष्य.
+        X_val (pd.DataFrame):Validation वैशिष्ट्ये.
+        y_val (pd.Series): Validation लक्ष्य.
+        seq_length (int):Sequenceची लांबी.
+        input_size (int): इनपुट वैशिष्ट्यांची संख्या.
+        hidden_size (int): LSTM लेयरमधील hidden nodesची संख्या.
+        num_layers (int): LSTM layersची संख्या.
+        epochs (int): प्रशिक्षणासाठी epochची संख्या.
+        patience (int): लवकर थांबण्यासाठी (early stopping) वापरला जाणारा patience.
+
+    Returns:
+        nn.Module: प्रशिक्षित LSTM मॉडेल.
+    """
+    class TimeSeriesDataset(Dataset):
+        def __init__(self, X, y, seq_length=30):
+            self.X = torch.FloatTensor(X)
+            self.y = torch.FloatTensor(y)
+            self.seq_length = seq_length
+
+        def __len__(self):
+            return len(self.X) - self.seq_length
+
+        def __getitem__(self, idx):
+            return self.X[idx:idx + self.seq_length], self.y[idx + self.seq_length]
+
+    X_train_np = X_train.values
+    X_val_np = X_val.values
+
+    train_dataset = TimeSeriesDataset(X_train_np, y_train.values, seq_length)
+    val_dataset = TimeSeriesDataset(X_val_np, y_val.values, seq_length)
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+
+    if input_size is None:
+        input_size = X_train_np.shape[1]
+    model = LSTMModel(input_size, hidden_size, output_size=1, num_layers=num_layers)
+    criterion = nn.BCEWithLogitsLoss()  # Binary cross-entropy loss
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+    best_val_loss = float('inf')
+    counter = 0
+    for epoch in range(epochs):
+        model.train()
+        for inputs, labels in train_loader:
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels.unsqueeze(1))
+            loss.backward()
+            optimizer.step()
+
+        model.eval()
+        val_loss = 0
+        with torch.no_grad():
+            for inputs, labels in val_loader:
+                outputs = model(inputs)
+                val_loss += criterion(outputs, labels.unsqueeze(1)).item()
+        val_loss /= len(val_loader)
+
+        print(f'Epoch [{epoch + 1}/{epochs}], Train Loss: {loss.item():.4f}, Val Loss: {val_loss:.4f}')
+
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            counter = 0
+        else:
+            counter += 1
+            if counter >= patience:
+                print('Early stopping!')
+                break
+    return model
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, num_layers=2):
+        super(LSTMModel, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        out = self.sigmoid(out)
+        return out
+
+
+if df_clean['timestamp'].is_monotonic_increasing:
+    # वेळेनुसार विभागणी
+    train_size = int(0.8 * len(feature_pipeline))
+    X_train_ts, X_val_ts = feature_pipeline[:train_size], feature_pipeline[train_size:]
+    y_train_ts, y_val_ts = df_clean['target'][:train_size], df_clean['target'][train_size:]
+    X_test_ts = X_test  # Use the original test set
+    y_test_ts = y_test
+
+    # Standard Scaler
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train_ts)
+    X_val_scaled = scaler.transform(X_val_ts)
+    X_test_scaled = scaler.transform(X_test_ts)  # Scale the test set
+
+    # Train LSTM model
+    lstm_model = train_time_series_model(X_train_scaled, y_train_ts, X_val_scaled, y_val_ts)
+    model = lstm_model
+else:
+    # Gradient Boosting
+    model = HistGradientBoostingClassifier(
+        categorical_features=df_clean.select_dtypes('category').columns.tolist(),
+        early_stopping=True,
+        max_iter=200,
+        scoring='f1_weighted'
+    ).fit(X_train, y_train)
+
+# 6. [EVALUATE]
+def evaluate_model(model, X_test, y_test, is_time_series=False):
+    """
+    मॉडेलच्या कामगिरीचे मूल्यांकन करते आणि विविध मेट्रिक्स मिळवते.
+
+    Args:
+        model: प्रशिक्षित मॉडेल.
+        X_test (np.ndarray or pd.DataFrame): चाचणी वैशिष्ट्ये.
+        y_test (pd.Series or np.ndarray): चाचणी लक्ष्य.
+        is_time_series (bool): वेळ-मालिका डेटा आहे की नाही.
+
+    Returns:
+        dict: मेट्रिक्स असलेले dictionary.
+    """
+    if is_time_series:
+        model.eval()
+        X_test_torch = torch.FloatTensor(X_test)
+        with torch.no_grad():
+            y_pred_proba = model(X_test_torch).squeeze().numpy()
+        y_pred = (y_pred_proba > 0.5).astype(int)
+        y_true = y_test.values
+    else:
+        y_pred = model.predict(X_test)
+        y_pred_proba = model.predict_proba(X_test)[:, 1]
+        y_true = y_test
+
+    report = classification_report(y_true, y_pred, output_dict=True)
+    auc = roc_auc_score(y_true, y_pred_proba)
+    ap = average_precision_score(y_true, y_pred_proba)
+    f1 = f1_score(y_true, y_pred)
+    cm = confusion_matrix(y_true, y_pred)
+    fpr, tpr, _ = roc_curve(y_true, y_pred_proba)
+    precision, recall, _ = precision_recall_curve(y_true, y_pred_proba)
+    calibration = calibration_curve(y_true, y_pred_proba, n_bins=10)
+
+    return {
+        'classification_report': report,
+        'auc': auc,
+        'ap': ap,
+        'f1': f1,
+        'confusion_matrix': cm,
+        'roc_curve': (fpr, tpr),
+        'precision_recall_curve': (precision, recall),
+        'calibration_curve': calibration
+    }
+
+def plot_metrics(metrics, is_time_series=False):
+    """
+    मूल्यांकन मेट्रिक्स प्लॉट करते.
+
+    Args:
+        metrics (dict): मूल्यांकन मेट्रिक्स असलेले dictionary.
+        is_time_series (bool): वेळ-मालिका डेटा आहे की नाही.
+    """
+    plt.figure(figsize=(15, 10))
+
+    # Confusion Matrix
+    plt.subplot(2, 2, 1)
+    cm = metrics['confusion_matrix']
+    plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+    plt.title('Confusion Matrix')
+    plt.colorbar()
+    tick_marks = np.arange(2)
+    plt.xticks(tick_marks, ['Class 0', 'Class 1'])
+    plt.yticks(tick_marks, ['Class 0', 'Class 1'])
+    thresh = cm.max() / 2.
+    for i, j in np.ndindex(cm.shape):
+        plt.text(j, i, format(cm[i, j], 'd'),
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
+    # ROC Curve
+    plt.subplot(2, 2, 2)
+    fpr, tpr = metrics['roc_curve']
+    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % metrics['auc'])
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+
+    # Precision-Recall Curve
+    plt.subplot(2, 2, 3)
+    precision, recall = metrics['precision_recall_curve']
+    plt.plot(recall, precision, color='b', lw=2, label='AP = %0.2f' % metrics['ap'])
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.legend(loc="lower left")
+
+    # Calibration Curve
+    if not is_time_series:
+        plt.subplot(2, 2, 4)
+        calibration_x, calibration_y = metrics['calibration_curve']
+        plt.plot(calibration_y, calibration_x, marker='o', linestyle='--', color='g')
+        plt.plot([0, 1], [0, 1], linestyle='--', color='r')
+        plt.xlabel('Mean Predicted Probability')
+        plt.ylabel('Fraction of Positives')
+        plt.title('Calibration Curve')
+
+    plt.tight_layout()
+    plt.show()
+
+if df_clean['timestamp'].is_monotonic_increasing:
+    test_metrics = evaluate_model(lstm_model, X_test_scaled, y_test_ts, is_time_series=True)
+    plot_metrics(test_metrics, is_time_series=True)
+else:
+    test_metrics = evaluate_model(model, X_test, y_test, is_time_series=False)
+    plot_metrics(test_metrics, is_time_series=False)
+print(test_metrics)
+
+# 7. [DEPLOY]
+def save_artifact(model, metadata):
+    """
+    मॉडेल आणि मेटाडेटा जतन करते.
+
+    Args:
+        model: प्रशिक्षित मॉडेल.
+        metadata (dict): प्रशिक्षण आणि डेटाबद्दलचा मेटाडेटा.
+
+    Returns:
+        str: जतन केलेल्या आर्टिफॅक्टचे व्हर्जन.
+    """
+    version = f"v{len(os.listdir('models')) + 1}"
+    artifact = {
+        'model': model,
+        'metadata': {
+            **metadata,
+            'version': version,
+            'dependencies': {
+                'python': '3.8.10',
+                'packages': {
+                    'pandas': pd.__version__,
+                    'numpy': np.__version__,
+                    'sklearn': sklearn.__version__,
+                    'torch': torch.__version__ if 'torch' in globals() else None
+                }
+            }
+        }
+    }
+    joblib.dump(artifact, f"models/model_{version}.pkl")
+    return version
+
+if df_clean['timestamp'].is_monotonic_increasing:
+  metadata = {
+      'train_date': pd.Timestamp.now(),
+      'features': list(X_train_ts.columns),
+      'target_column': 'target',
+      'model_type': 'LSTM',
+      'scaling': 'StandardScaler',
+      'sequence_length': 30
+  }
+else:
+  metadata = {
+        'train_date': pd.Timestamp.now(),
+        'features': list(X_train.columns),
+        'target_column': 'target',
+        'model_type': 'HistGradientBoostingClassifier',
+    }
+save_artifact(model, metadata)
