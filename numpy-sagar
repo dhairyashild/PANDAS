@@ -3,11 +3,13 @@
 -[[  2 sqare block if list in list
 
 ### numpy ARRAY CREATION METHODS
-a= np.array(var)                        /       a= np.array([1,2,3,4])   
+a= np.array(var)                        /       a= np.array([1,2,3,4])    ------ manually value give
+
+#### REMEMBER =====0,1,full,eye,arange
 np.zeros((2,2))              (row  , column )
 np.ones((2,3))                ---error 2 round bracket i gave 1
 np.full((2,3),7)
-np.arrange(start-include , stop-exclude , step)     ====same like range in python     ---only 1d create
+np.arange(start-include , stop-exclude , step)     ====same like range in python    ---only 1d create     -error=arrange spelling wrong
 identity_matrix= np.eye(value)                      ====diagonal with 1
 
 #### PROPERTIES of arrays
