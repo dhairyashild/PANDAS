@@ -1,3 +1,4 @@
+import pandas as pd
 df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)
 
 df.info()
@@ -6,23 +7,34 @@ df.tail()
 df[["salary","age"]]
 df.describe()
 
+#######################################################################################3
 
-
-
-
-
-1 Allow panda to to  read data
+1 Allow panda to to  read which is already given in csv/json/excel
 df= pd.read_csv("data.csv")
 df=pd.read_excel("data.xlsx")
 df=pd.read_json("data.json")
 
-data= {                                                                      #     data=  {curly}                        "name" : vapara = nahi  [list ,]
+#### ENCODING ERROR CAME FOR ABOVE COMMAND THEN
+# Use UTF-8 for most files (handles multilingual, safest default)
+df = pd.read_csv('file.csv', encoding='utf-8')
+# Use latin1 for legacy/European/Excel files or if utf-8 gives errors
+df = pd.read_csv('file.csv', encoding='latin1')
+
+                               OR
+1" IF U WRITE DATA BY URSELF EACH ROW AND & COLOMN
+data= {                                           #     data=  {curly}             "name"          :CORRECT/=WRONG HERE     [list ,]
 "name" : ["dd", "dd","pp","sd"],
 "salary" : [1000, 2000, 3000, 4000],
 "age" : [20, 30, 40, 50]
 }
-  df=pd.DataFrame(data)                       # DF mothe shabd                  data=  {curly}                        "name" : vapara = nahi  [list ,]
-  
+
+df=pd.DataFrame(data)                       # DF mothe shabd                  data=  {curly}                        "name" : vapara = nahi  [list ,]
+df.to_csv("output.csv",index=false)         # .to_csv("") --converts manually created data into csv files      
+                                            # index = Not to include row index, default True   
+df.to_json('output.json', index=False)
+df.to_excel('output.xlsx', index=False)  # index=False to exclude row index
+
+
 2  ----select 2 columns  
  print(df[["salary","age"]])              #  [  [  2 square ]  ]      
    ----create subset of above 2 columns
