@@ -1,9 +1,24 @@
+### REMEMBER WHICH BRACKET FOR WHAT  ---[] FOR COLUMN SELECT    ((    ))FOR GIVE CONDITION
+
+print()
+p    (df.columns)  , p    (df.shape)         -----columns and shape both not require () like shape() wrong , only shape is correct            
+df[["salary","age"]]           
+print((                           ))
+print((condition1   &   cond2    ))
+
+###############################################################################################
+# SARANSH FOR BELOW ALL
+
 import pandas as pd
 
 1. Load Data
 df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)
 
-2. Inspect Basic Info
+2. Inspect Data Shape and Columns
+print(df.shape)    # Check number of rows and columns
+print(df.columns)  # Check column names                     --"O" is not there after colOMN  WRONG          --- S must
+
+3. Inspect Basic Info
 df.info()   ======Data types, non-null counts
 
 3. Preview Data
@@ -11,12 +26,27 @@ df.head()    ====== Sample first
 df.tail()   ======Sample last
 
 4. Select Relevant Columns
+df[["salary"]]   ----1 column select below command for multiple column selection
 df[["salary","age"]]   ======Check features/target needed for modeling
 
 5. Statistical Summary
 df.describe()   ======mean, std, quartiles) for numeric columns to detect outliers and distribution
 
+6  coditions
+print((df["age"]>40) & (df["age"]>40))                  ----- 2 condition
+print((df["age"]>40) | (df["age"]>40))                  ----- 1st or 2 nd condition must satisfy by data
+
+
 #######################################################################################
+
+
+
+
+
+
+
+
+
 
 1 Allow panda to to  read which is already given in csv/json/excel
 df= pd.read_csv("data.csv")
@@ -37,7 +67,7 @@ data= {                                           #     data=  {curly}          
 "age" : [20, 30, 40, 50]
 }
 
-df=pd.DataFrame(data)                       # DF mothe shabd                  data=  {curly}                        "name" : vapara = nahi  [list ,]
+df=pd.DataFrame(data)                       # DF mothe shabd                 
 df.to_csv("output.csv",index=false)         # .to_csv("") --converts manually created data into csv files      
                                             # index = Not to include row index, default True   
 df.to_json('output.json', index=False)
@@ -74,56 +104,6 @@ print((df["age"]>40) & (df["age"]>40))                  ----- 2 condition
 
 print((df["age"]>40) | (df["age"]>40))                  ----- 1st or 2 nd condition must satisfy by data
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import pandas as pd
-
-data= {                                                                      #     data=  {curly}                        "name" : vapara = nahi  [list ,]
-"name" : ["dd", "dd","pp","sd"],
-"salary" : [1000, 2000, 3000, 4000],
-"age" : [20, 30, 40, 50]
-}
-
-df=pd.DataFrame(data)
-print(df)
-
-print(df[["salary","age"]])
-
-print(df.head())                                                    #df.head()
-
-print(df.tail(2))
-
-print(df.info())
-<class 'pandas.core.frame.DataFrame'>
-RangeIndex: 4 entries, 0 to 3
-Data columns (total 5 columns):
- #   Column  Non-Null Count  Dtype 
----  ------  --------------  ----- 
- 0   name    4 non-null      object
- 1   salary  4 non-null      int64 
- 2   age     4 non-null      int64 
- 3   winner  4 non-null      bool  
- 4   loser   4 non-null      bool  
-dtypes: bool(2), int64(2), object(1)
-memory usage: 232.0+ bytes
-None
-
-
-RangeIndex: 4  rows
-Data columns (total 5 columns
 
 
 
