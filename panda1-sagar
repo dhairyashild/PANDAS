@@ -1,13 +1,22 @@
 import pandas as pd
+
+1. Load Data
 df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)
 
-df.info()
-df.head()            
-df.tail()
-df[["salary","age"]]
-df.describe()
+2. Inspect Basic Info
+df.info()   ======Data types, non-null counts
 
-#######################################################################################3
+3. Preview Data
+df.head()    ====== Sample first         
+df.tail()   ======Sample last
+
+4. Select Relevant Columns
+df[["salary","age"]]   ======Check features/target needed for modeling
+
+5. Statistical Summary
+df.describe()   ======mean, std, quartiles) for numeric columns to detect outliers and distribution
+
+#######################################################################################
 
 1 Allow panda to to  read which is already given in csv/json/excel
 df= pd.read_csv("data.csv")
@@ -54,7 +63,7 @@ count     4.000000   4.000000                   ## count ===non null values
 mean   2500.000000  35.000000
 std    1290.994449  12.909944
 min    1000.000000  20.000000
-25%    1750.000000  27.500000                   # 1st 1/4 values average
+25%    1750.000000  27.500000                   # 1st 25% values average if put in ascending oredr only (not consider descending)
 50%    2500.000000  35.000000                   # 2nd 
 75%    3250.000000  42.500000
 max    4000.000000  50.000000
