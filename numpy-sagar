@@ -359,7 +359,9 @@ print(var4)              ==========[1 2 3 4 5 6]
 
 
 
+df.isnull().sum()  ======gives number of null values
 
+df.isnull().mean()*100======gives % of null values
 
 
 
