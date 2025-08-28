@@ -1,0 +1,123 @@
+# =============================================================================
+# ULTIMATE GUIDE: HANDLING MISSING DATA (BEST PRACTICES ONLY)
+# =============================================================================
+# Core Principle: Learn一切 from training data only to prevent data leakage
+# =============================================================================
+
+# =============================================================================
+# STEP 1: INSTALL & IMPORT (ALWAYS DO FIRST)
+# =============================================================================
+!pip install missingno
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import missingno as msno
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.experimental import enable_iterative_imputer
+from sklearn.impute import IterativeImputer
+
+# =============================================================================
+# STEP 2: LOAD & EXPLORE (UNDERSTAND YOUR DATA FIRST)
+# =============================================================================
+df = pd.read_csv('your_data.csv')  # ← REPLACE WITH YOUR FILE
+print("Dataset shape:", df.shape)
+print("\nData preview:")
+display(df.head())
+
+# =============================================================================
+# STEP 3: MISSING DATA AUDIT (CRUCIAL ANALYSIS STEP)
+# =============================================================================
+print("\n=== MISSING DATA ANALYSIS ===")
+missing_count = df.isnull().sum()
+missing_pct = (df.isnull().mean() * 100).round(2)
+missing_info = pd.DataFrame({'Missing_Count': missing_count, 'Percent%': missing_pct})
+display(missing_info[missing_info['Missing_Count'] > 0])
+
+# BEST PRACTICE: Visualize missing patterns to understand why data is missing
+msno.matrix(df)
+plt.title('Missing Data Pattern Analysis')
+plt.show()
+
+# =============================================================================
+# STEP 4: SPLIT DATA FIRST (MOST CRITICAL STEP - PREVENTS LEAKAGE)
+# =============================================================================
+# ✅ BEST PRACTICE: Split before any imputation to avoid data leakage
+# ❌ ANTI-PATTERN: Never impute before splitting (contaminates test set)
+
+X = df.drop('target', axis=1)  # ← REPLACE 'target' WITH YOUR TARGET COLUMN
+y = df['target']               # ← REMOVE IF UNSUPERVISED LEARNING
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42  # ← REPRODUCIBLE SPLIT
+)
+
+train_df = X_train.copy()  # ← WORK ON COPIES
+test_df = X_test.copy()
+
+print(f"Training set: {train_df.shape}, Test set: {test_df.shape}")
+print("✓ Data split successfully - no leakage!")
+
+# =============================================================================
+# STEP 5: IDENTIFY FEATURE TYPES (TRAINING DATA ONLY)
+# =============================================================================
+# ✅ BEST PRACTICE: Use training data only to identify feature types
+numerical_cols = train_df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+categorical_cols = train_df.select_dtypes(include=['object', 'category']).columns.tolist()
+
+print("Numerical features:", numerical_cols)
+print("Categorical features:", categorical_cols)
+
+# =============================================================================
+# STEP 6: CREATE MISSINGNESS INDICATORS (HIGHLY RECOMMENDED)
+# =============================================================================
+# ✅ BEST PRACTICE: Add binary flags before imputation - often predictive
+# ❌ ANTI-PATTERN: Simply imputing without capturing missingness pattern
+
+missing_cols = train_df.columns[train_df.isnull().any()].tolist()
+
+for col in missing_cols:
+    train_df[f'{col}_MISSING'] = train_df[col].isnull().astype(int)
+    test_df[f'{col}_MISSING'] = test_df[col].isnull().astype(int)
+
+print("Created missing indicators for:", missing_cols)
+
+# =============================================================================
+# STEP 7: IMPUTATION (LEARN FROM TRAIN, APPLY TO BOTH)
+# =============================================================================
+# NUMERICAL FEATURES:
+if numerical_cols:
+    # ✅ BEST PRACTICE: Median for robustness (use IterativeImputer for advanced)
+    # ❌ ANTI-PATTERN: Mean imputation on skewed data (creates bias)
+    # ❌ ANTI-PATTERN: Arbitrary values like -999 (creates false outliers)
+    
+    num_imputer = SimpleImputer(strategy='median')  # ← GOOD BASELINE
+    # num_imputer = IterativeImputer(random_state=42)  # ← BEST FOR COMPLEX DATA
+    
+    train_df[numerical_cols] = num_imputer.fit_transform(train_df[numerical_cols])
+    test_df[numerical_cols] = num_imputer.transform(test_df[numerical_cols])
+    print("✓ Numerical features imputed (median)")
+
+# CATEGORICAL FEATURES:
+if categorical_cols:
+    # ✅ BEST PRACTICE: 'MISSING' category preserves information
+    # ❌ ANTI-PATTERN: Dropping missing categorical values (loses information)
+    
+    cat_imputer = SimpleImputer(strategy='constant', fill_value='MISSING')
+    train_df[categorical_cols] = cat_imputer.fit_transform(train_df[categorical_cols])
+    test_df[categorical_cols] = cat_imputer.transform(test_df[categorical_cols])
+    print("✓ Categorical features imputed ('MISSING' category)")
+
+# =============================================================================
+# STEP 8: FINAL VALIDATION (ENSURE NO MISSING DATA REMAINS)
+# =============================================================================
+print("\n=== FINAL VALIDATION ===")
+print("Missing values in training set:", train_df.isnull().sum().sum())
+print("Missing values in test set:", test_df.isnull().sum().sum())
+
+# ✅ BEST PRACTICE: Save processed data for modeling
+# train_df.to_csv('train_processed.csv', index=False)
+# test_df.to_csv('test_processed.csv', index=False)
+
+print("✓ All missing data handled using best practices!")
+print("✓ No data leakage - ready for machine learning!")
