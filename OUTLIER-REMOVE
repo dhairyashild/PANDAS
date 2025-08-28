@@ -1,0 +1,62 @@
+################## REMEMBER ----==IF BELL SAHAPED GRAPH THEN USE STD DEVIATION IF SKEWED GRAPH ON ANY SIDE THEN USE IQR METHOD TOLD BY CAMPUSX
+
+
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Step 1: Load or create your DataFrame
+# Example: df = pd.read_csv('your_data.csv')
+# df = pd.DataFrame({'column': [your_data_here]})
+
+# Step 2: Visualize data distribution with Histogram  ==IF BELL SAHAPED GRAPH THEN USE STD DEVIATION IF SKEWED GRAPH ON ANY SIDE THEN USE IQR METHOD TOLD BY CAMPUSX
+sns.histplot(df['column'], bins=30, kde=True)
+plt.title('Histogram with Std Deviation')
+plt.show()
+
+# Step 3: Visualize quartiles and outlier candidates with Box Plot
+sns.boxplot(x=df['column'])
+plt.title('Box Plot')
+plt.show()
+
+# Step 4: Calculate IQR outlier boundaries
+Q1 = df['column'].quantile(0.25)
+Q3 = df['column'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+# Step 5: Flag outliers (no modification)
+df['outlier_flag'] = ((df['column'] < lower_bound) | (df['column'] > upper_bound)).astype(int)
+
+# Step 6: Optionally, filter out outliers (non-destructive)
+df_filtered = df[(df['column'] >= lower_bound) & (df['column'] <= upper_bound)]
+
+
+
+
+################################# Z SCORE METHOD  --- NOT SED IN PROD MOSTLY USED IQR AND MODEL BASED
+# FORMULA OF Z JUST UNDERSTAND -NOT TO USE IN CODE BELOW 6 LINES
+
+# Z=(DATA-MEAN)/STANDERD DEVIATION
+#DATA: The value being checked.
+#MEAN: The average of all values.
+#STANDARD DEVIATION: How spread out values are.
+#Z: Distance from mean measured in standard deviations.
+# Z-Score Outlier Detection (Best Practice)
+
+from scipy.stats import zscore
+
+# Calculate Z-scores for the column
+df['z_score'] = zscore(df['column'])
+
+# Flag outliers with Z-score > 3 or < -3
+df['outlier_flag'] = (df['z_score'].abs() > 3).astype(int)
+
+# Optionally remove outliers
+df_filtered = df[df['z_score'].abs() <= 3]
+
+
+
+
