@@ -31,5 +31,23 @@
 
 *This markdown block can be copied directly into GitHub or markdown-supported environments for easy reference and sharing.*
 
+#################################################################
 
+feature == column
+
+model = LeanearRegression()    --------it cerates instance of class leanearRegression as model so not need to write full just write model
+
+
+-------------------------------------
+hours of study as x  marks get y
+1                                   20
+2                                    40
+3                                    60 
+4                                    80
+ then which data is 20 5 AND WHERE IT USED
+
+
+Training (80%): (1,20), (2,40), (3,60) → Used in model.fit()
+Test (20%): (4,80) → Used in model.predict() and model.score()
+---------------------------------------------------------------------------
 
