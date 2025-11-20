@@ -11,7 +11,7 @@ df.describe()               # संख्यात्मक डेटाची 
 
 # 2nd vid
 
-df.isnull()                 # गहाळ मूल्ये शोधणे (True/False मॅट्रिक्स) 
+df.isnull()                 # गहाळ मूल्ये शोधणे (True/False मॅट्रिक्स)          = True =Nan means data  missing 
 df.isnull().sum()           # प्रत्येक कॉलममधील गहाळ मूल्यांची संख्या 
 
 df.dropna(axis=0, inplace=True)  # गहाळ मूल्ये असलेल्या पंक्ती काढून टाकणे #  ax=1 for column
@@ -22,6 +22,10 @@ df.loc[2, "salary"]= 5500                           ##only this have square brac
 df.insert(v1, "v2", [v3])   # नवीन कॉलम समाविष्ट करणे 
 
 df("salary") = df("salary") *1.05                             ### Increase any column by 5%=  *1.05 or reduce by 10%=  *.9 (add multiply as per need)
+
+df["age"].fillna(df["age"].mean(),inplace=True)
+df["age"].fillna()               ----select age column for fillna
+df["age"].mean()                 ----mean 
 
 ##################################################################
 
