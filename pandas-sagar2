@@ -10,14 +10,18 @@ df["salary"]                # एकच कॉलम निवडणे # मर
 df.describe()               # संख्यात्मक डेटाची सांख्यिकीय माहिती दाखवणे
 
 # 2nd vid
-df.insert(v1, "v2", [v3])   # नवीन कॉलम समाविष्ट करणे 
-df.drop(columns=["v2"])     # कॉलम डिलीट करणे # मराठी
+
 df.isnull()                 # गहाळ मूल्ये शोधणे (True/False मॅट्रिक्स) 
 df.isnull().sum()           # प्रत्येक कॉलममधील गहाळ मूल्यांची संख्या 
-df.dropna(axis=0, inplace=True)  # गहाळ मूल्ये असलेल्या पंक्ती काढून टाकणे #  ax=1 for column
-df.fillna(value-to-fill, inplace=True)  # गहाळ मूल्ये भरणे 
-df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)    -for local data to add
 
+df.dropna(axis=0, inplace=True)  # गहाळ मूल्ये असलेल्या पंक्ती काढून टाकणे #  ax=1 for column
+df.drop(columns=["v2"])     # कॉलम डिलीट करणे # मराठी
+
+df.fillna(value-to-fill, inplace=True)  # गहाळ मूल्ये भरणे 
+df.loc[2, "salary"]= 5500                           ##only this have square bracket 1st other all strart with  round bracket       ####loc=location  [row-number,"column-name-title"]
+df.insert(v1, "v2", [v3])   # नवीन कॉलम समाविष्ट करणे 
+
+df("salary") = df("salary") *1.05                             ### Increase any column by 5%=  *1.05 or reduce by 10%=  *.9 (add multiply as per need)
 
 ##################################################################
 
