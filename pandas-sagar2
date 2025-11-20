@@ -2,13 +2,38 @@
 sagar-video-1-notes
 df = pd.read_csv("data.csv")  / df=pd.DataFrame(data)    # डेटा CSV वरून वाचणे किंवा लोकल डेटा डेटाफ्रेममध्ये रूपांतरित करणे
 
-df.info()                   # डेटाफ्रेमची मूलभूत माहिती (कॉलम, डेटा प्रकार, मेमरी वापर)
-df.head()                   # डेटाफ्रेमच्या पहिल्या ५ पंक्ती दाखवणे        
-df.tail()                   # डेटाफ्रेमच्या शेवटच्या ५ पंक्ती दाखवणे
-df[["salary","age"]]        # विशिष्ट कॉलम निवडणे (मल्टीपल कॉलम्स) 
-df["salary"]                # एकच कॉलम निवडणे # मराठी
-df.describe()               # संख्यात्मक डेटाची सांख्यिकीय माहिती दाखवणे
+# SARANSH FOR VID 1
 
+import pandas as pd
+
+1. Load Data
+df= pd.read_csv("data.csv")  / df=pd.DataFrame(data)
+
+2. Inspect Data Shape and Columns
+print(df.shape)    # Check number of rows and columns
+print(df.columns)  # Check column names                     --"O" is not there after colOMN  WRONG          --- S must
+
+3. Inspect Basic Info
+df.info()   ======Data types, non-null counts
+
+3. Preview Data
+df.head()    ====== Sample first         
+df.tail()   ======Sample last
+
+4. Select Relevant Columns
+df[["salary"]]   ----1 column select below command for multiple column selection
+df[["salary","age"]]   ======Check features/target needed for modeling
+
+5. Statistical Summary
+df.describe()   ======mean, std, quartiles) for numeric columns to detect outliers and distribution
+
+6  coditions
+print((df["age"]>40) & (df["age"]>40))                  ----- 2 condition
+print((df["age"]>40) | (df["age"]>40))                  ----- 1st or 2 nd condition must satisfy by data
+
+
+
+###############################################################################################################################################################
 # 2nd vid
 
 df.isnull()                 # गहाळ मूल्ये शोधणे (True/False मॅट्रिक्स)          = True =Nan means data  missing 
